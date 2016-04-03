@@ -1,0 +1,18 @@
+body {
+	padding-top: 30px;
+	background-color: #ccc;
+}
+.container {
+	width: 100%;
+	color: black;
+}
+.body {
+	margin-top: 25px;
+}
+.player-card {
+	float: left;
+	margin-right: 10%;
+}
+#done-container {
+	clear: both;
+}
