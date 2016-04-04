@@ -72,3 +72,6 @@ $("#act-done").click(function() {
     $("label").hide();
     socket.emit("send actions", sendActions);
 });
+socket.on('update messages', function(messages) {
+    $("#messages").html(messages);
+});

@@ -16,6 +16,8 @@ app.get('/about', function(req, res){
 var players = {};
 var free = true;
 var actions = {};
+var messages = "";
+var turn = 1;
 
 io.on('connection', function(socket){
     if (free) {
@@ -54,17 +56,26 @@ io.on('connection', function(socket){
         var number = Object.keys(players).length;
         var current = Object.keys(actions).length;
         if (number == current) {
+            messages = "<strong>Turn " + turn + ":</strong><br/>";
             for (var actor in actions) {
                 for (var i = 0; i < actions[actor].attacks.length; i++) {
                     var target = actions[actor].attacks[i];
                     if (actions[target].blocks.indexOf(actor) < 0) {
                         //HIT
                         players[target].life -= 3;
+                        messages += players[actor].name + " attacked " + players[target].name + " and hit!<br/>";
+                    }
+                    else {
+                        //BLOCKED
+                        messages += players[actor].name + " attacked " + players[target].name + " but was blocked!<br/>";
                     }
                 }
                 players[actor].life -= actions[actor].attacks.length + actions[actor].blocks.length;
             }
             io.emit("update game", players);
+            io.emit("update messages", messages);
+            actions = {};
+            turn++;
         }
     });
 
@@ -73,6 +84,7 @@ io.on('connection', function(socket){
         delete players[socket.id];
         io.emit("update waiting", players);
         free = true;
+        turn = 1;
     });
 });
 
